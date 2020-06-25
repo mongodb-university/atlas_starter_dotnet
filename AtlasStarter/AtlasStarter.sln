@@ -1,0 +1,17 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtlasStarter", "AtlasStarter.csproj", "{AF9123AE-E6AF-44F6-BBE6-D8A633C4FDDE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|anycpu = Debug|anycpu
+		Release|anycpu = Release|anycpu
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AF9123AE-E6AF-44F6-BBE6-D8A633C4FDDE}.Debug|anycpu.ActiveCfg = Debug|anycpu
+		{AF9123AE-E6AF-44F6-BBE6-D8A633C4FDDE}.Debug|anycpu.Build.0 = Debug|anycpu
+		{AF9123AE-E6AF-44F6-BBE6-D8A633C4FDDE}.Release|anycpu.ActiveCfg = Release|anycpu
+		{AF9123AE-E6AF-44F6-BBE6-D8A633C4FDDE}.Release|anycpu.Build.0 = Release|anycpu
+	EndGlobalSection
+EndGlobal

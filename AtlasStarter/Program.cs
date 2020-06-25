@@ -1,0 +1,185 @@
+﻿using System;
+using System.Collections.Generic;
+using MongoDB.Driver;
+
+namespace AtlasStarter
+{
+    class MainClassNoPrompt
+    {
+        public static void Main(string[] args)
+        {
+            // Provide your Atlas connection string here. Be sure it includes
+            // a valid username and password! Note that in a production environment,
+            // you do not want to store your password in plain-text here.
+
+            var mongoUri = "";
+
+            // The IMongoClient is the object that defines the connection to our
+            // datastore (Atlas, for example)
+            IMongoClient client;
+
+            // An IMongoCollection defines a connection to a specific MongoDB
+            // collection. Your app may have one or many different IMongoCollection
+            // objects.
+            IMongoCollection<Recipe> collection;
+
+            // Note that you must define the *type* of data stored in the
+            // IMongoCollection. We have created a class called TestDocument at
+            // the bottom of this file that serves as a "mapping class" -- the 
+            // driver maps the C# class to the BSON stored in MongoDB.
+
+            // Using mapping classes is strongly advised, but if you
+            // don't create them, you can always use the more generic BsonDocument
+            // type.
+
+            try
+            {
+                client = new MongoClient(mongoUri);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return;
+            }
+
+            // Provide the name of the database and collection you want to use.
+            // If they don't already exist, the driver and Atlas will create them
+            // automatically when you first write data.
+            var dbName = "testDatabase";
+            var collectionName = "testCollection";
+
+            try
+            {
+                collection = client.GetDatabase(dbName)
+                    .GetCollection<Recipe>(collectionName);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return;
+            }
+
+            /*      *** INSERT DOCUMENTS ***
+             * 
+             * You can insert individual documents using collection.Insert(). 
+             * In this example, we're going to create 4 documents and then 
+             * insert them all in one call with InsertMany().
+             */
+
+            var docs = Recipe.GetRecipes();
+
+            try
+            {
+                collection.InsertMany(docs);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return;
+            }
+
+            /*      *** FIND DOCUMENTS ***
+             * 
+             * Now that we have data in Atlas, we can read it. To retrieve all of
+             * the data in a collection, we call Find() with an empty filter. 
+             * The Builders class is very helpful when building complex 
+             * filters, and is used here to show its most basic use.
+             */
+
+            var allDocs = collection.Find(Builders<Recipe>.Filter.Empty)
+                .ToList();
+
+            foreach (Recipe doc in allDocs)
+            {
+                // Do something with each document ...
+            }
+
+            // We can also find a single document. Let's find the first document
+            // that has the string "potato" in the Ingredients list. Again we
+            // use the Builders class to create the filter, and a LINQ
+            // statement to define the property and value we're after:
+
+            var findFilter = Builders<Recipe>
+                .Filter.AnyEq(t => t.Ingredients,
+                "potato");
+
+            var findResult = collection.Find(findFilter).FirstOrDefault();
+
+            if (findResult == null)
+            {
+                return;
+            }
+
+            /*      *** UPDATE A DOCUMENT ***
+             * 
+             * You can update a single document, as shown here, or multiple 
+             * documents in a single call.
+             * 
+             * Here we update the PrepTimeInMinutes value on the document we 
+             * just found.
+             */
+
+            var updateFilter = Builders<Recipe>.Update.Set(t => t.PrepTimeInMinutes, 72);
+
+            // The follwing FindOneAndUpdateOptions specify that we want the *updated* document
+            // to be returned to us. By default, we get the document as it was *before*
+            // the update.
+
+            var options = new FindOneAndUpdateOptions<Recipe, Recipe>()
+            {
+                ReturnDocument = ReturnDocument.After
+            };
+
+            // The updatedDocument object is a Recipe object that refelcts the
+            // changes we just made.
+            var updatedDocument = collection.FindOneAndUpdate(findFilter,
+                updateFilter, options);
+
+            /*      *** DELETE DOCUMENTS ***
+             *      
+             *      As with other CRUD methods, you can delete a single document 
+             *      or all documents that match a specified filter. To delete all 
+             *      of the documents in a collection, pass an empty filter to 
+             *      the DeleteMany() method:
+             */
+
+            var deleteResult = collection
+                .DeleteMany(Builders<Recipe>.Filter.Empty);
+
+            //You can get the count of deleted records with {deleteResult.DeletedCount}
+        }
+
+    }
+
+    public class Recipe
+    {
+        public string Name { get; set; }
+        public List<string> Ingredients { get; set; }
+        public int PrepTimeInMinutes { get; set; }
+
+        public Recipe()
+        {
+            this.Ingredients = new List<string>();
+        }
+
+        public Recipe(string name, List<string> ingredients, int prepTime)
+        {
+            this.Name = name;
+            this.Ingredients = ingredients;
+            this.PrepTimeInMinutes = prepTime;
+        }
+
+        public static List<Recipe> GetRecipes()
+        {
+            return new List<Recipe>()
+            {
+                new Recipe("elotes", new List<string>(){"corn", "mayonnaise", "cotija cheese", "sour cream", "lime" }, 35),
+                new Recipe("loco moco", new List<string>(){"ground beef", "butter", "onion", "egg", "bread bun", "mushrooms" }, 54),
+                new Recipe("patatas bravas", new List<string>(){"potato", "tomato", "olive oil", "onion", "garlic", "paprika" }, 80),
+                new Recipe("fried rice", new List<string>(){"rice", "soy sauce", "egg", "onion", "pea", "carrot", "sesame oil" }, 40),
+            };
+        }
+    }
+}
+
+
