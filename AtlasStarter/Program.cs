@@ -8,11 +8,13 @@ namespace AtlasStarter
     {
         public static void Main(string[] args)
         {
-            // Provide your Atlas connection string here. Be sure it includes
+            // TODO:
+            // Replace the placeholder connection string below with your
+            // Altas cluster specifics. Be sure it includes
             // a valid username and password! Note that in a production environment,
             // you do not want to store your password in plain-text here.
 
-            var mongoUri = "";
+            var mongoUri = "mongodb+srv://<username>:<password>@<cluster-url>?retryWrites=true&w=majority";
 
             // The IMongoClient is the object that defines the connection to our
             // datastore (Atlas, for example)
@@ -38,6 +40,10 @@ namespace AtlasStarter
             }
             catch (Exception e)
             {
+                Console.WriteLine("There was a problem connecting to your " +
+                    "Atlas cluster. Check that the URI includes a valid " +
+                    "username and password, and that your IP address has " +
+                    $"been whitelisted. Message: {e.Message}");
                 Console.WriteLine(e);
                 return;
             }
@@ -48,16 +54,9 @@ namespace AtlasStarter
             var dbName = "testDatabase";
             var collectionName = "testCollection";
 
-            try
-            {
-                collection = client.GetDatabase(dbName)
-                    .GetCollection<Recipe>(collectionName);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                return;
-            }
+            collection = client.GetDatabase(dbName)
+               .GetCollection<Recipe>(collectionName);
+         
 
             /*      *** INSERT DOCUMENTS ***
              * 
@@ -74,6 +73,8 @@ namespace AtlasStarter
             }
             catch (Exception e)
             {
+                Console.WriteLine($"Something went wrong trying to insert the new documents." +
+                    $" Message: {e.Message}");
                 Console.WriteLine(e);
                 return;
             }
@@ -89,9 +90,10 @@ namespace AtlasStarter
             var allDocs = collection.Find(Builders<Recipe>.Filter.Empty)
                 .ToList();
 
-            foreach (Recipe doc in allDocs)
+            foreach (Recipe recipe in allDocs)
             {
-                // Do something with each document ...
+                Console.WriteLine($"{recipe.Name} has {recipe.Ingredients.Count} ingredients " +
+                    $"and takes {recipe.PrepTimeInMinutes} minutes to make");
             }
 
             // We can also find a single document. Let's find the first document
@@ -107,6 +109,8 @@ namespace AtlasStarter
 
             if (findResult == null)
             {
+                Console.WriteLine(
+                    "I didn't find any recipes that contain 'potato' as an ingredient.");
                 return;
             }
 
@@ -135,6 +139,9 @@ namespace AtlasStarter
             var updatedDocument = collection.FindOneAndUpdate(findFilter,
                 updateFilter, options);
 
+            Console.WriteLine("Here's the updated document:");
+            Console.WriteLine(updatedDocument.ToString());
+
             /*      *** DELETE DOCUMENTS ***
              *      
              *      As with other CRUD methods, you can delete a single document 
@@ -146,7 +153,9 @@ namespace AtlasStarter
             var deleteResult = collection
                 .DeleteMany(Builders<Recipe>.Filter.Empty);
 
-            //You can get the count of deleted records with {deleteResult.DeletedCount}
+            Console.WriteLine($"I deleted {deleteResult.DeletedCount} records.");
+
+            Console.Read();
         }
 
     }
