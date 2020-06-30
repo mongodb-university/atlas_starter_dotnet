@@ -42,8 +42,8 @@ namespace AtlasStarter
             {
                 Console.WriteLine("There was a problem connecting to your " +
                     "Atlas cluster. Check that the URI includes a valid " +
-                    "username and password, and that your IP address has " +
-                    $"been whitelisted. Message: {e.Message}");
+                    "username and password, and that your IP address is " +
+                    $"in the Access List. Message: {e.Message}");
                 Console.WriteLine(e);
                 return;
             }
