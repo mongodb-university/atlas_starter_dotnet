@@ -14,7 +14,7 @@ namespace AtlasStarter
             // a valid username and password! Note that in a production environment,
             // you do not want to store your password in plain-text here.
 
-            var mongoUri = "mongodb+srv://<username>:<password>@<cluster-url>?retryWrites=true&w=majority";
+            var mongoUri = "<Your Atlas Connection String>";
 
             // The IMongoClient is the object that defines the connection to our
             // datastore (Atlas, for example)
@@ -26,7 +26,7 @@ namespace AtlasStarter
             IMongoCollection<Recipe> collection;
 
             // Note that you must define the *type* of data stored in the
-            // IMongoCollection. We have created a class called TestDocument at
+            // IMongoCollection. We have created a class called Recipe at
             // the bottom of this file that serves as a "mapping class" -- the 
             // driver maps the C# class to the BSON stored in MongoDB.
 
@@ -51,8 +51,8 @@ namespace AtlasStarter
             // Provide the name of the database and collection you want to use.
             // If they don't already exist, the driver and Atlas will create them
             // automatically when you first write data.
-            var dbName = "testDatabase";
-            var collectionName = "testCollection";
+            var dbName = "myDatabase";
+            var collectionName = "recipes";
 
             collection = client.GetDatabase(dbName)
                .GetCollection<Recipe>(collectionName);
@@ -116,8 +116,7 @@ namespace AtlasStarter
 
             /*      *** UPDATE A DOCUMENT ***
              * 
-             * You can update a single document, as shown here, or multiple 
-             * documents in a single call.
+             * You can update a single document or multiple documents in a single call.
              * 
              * Here we update the PrepTimeInMinutes value on the document we 
              * just found.
@@ -134,7 +133,7 @@ namespace AtlasStarter
                 ReturnDocument = ReturnDocument.After
             };
 
-            // The updatedDocument object is a Recipe object that refelcts the
+            // The updatedDocument object is a Recipe object that reflects the
             // changes we just made.
             var updatedDocument = collection.FindOneAndUpdate(findFilter,
                 updateFilter, options);
@@ -147,11 +146,12 @@ namespace AtlasStarter
              *      As with other CRUD methods, you can delete a single document 
              *      or all documents that match a specified filter. To delete all 
              *      of the documents in a collection, pass an empty filter to 
-             *      the DeleteMany() method:
+             *      the DeleteMany() method. In this example, we'll delete 2 of 
+             *      the recipes.
              */
 
             var deleteResult = collection
-                .DeleteMany(Builders<Recipe>.Filter.Empty);
+                .DeleteMany(Builders<Recipe>.Filter.In(r => r.Name, new string[] { "elotes", "fried rice"}));
 
             Console.WriteLine($"I deleted {deleteResult.DeletedCount} records.");
 
