@@ -10,7 +10,7 @@ namespace AtlasStarter
         {
             // TODO:
             // Replace the placeholder connection string below with your
-            // Altas cluster specifics. Be sure it includes
+            // Atlas cluster specifics. Be sure it includes
             // a valid username and password! Note that in a production environment,
             // you do not want to store your password in plain-text here.
 
