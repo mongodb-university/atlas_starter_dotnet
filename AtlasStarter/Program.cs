@@ -57,7 +57,6 @@ namespace AtlasStarter
             collection = client.GetDatabase(dbName)
                .GetCollection<Recipe>(collectionName);
 
-
             /*      *** INSERT DOCUMENTS ***
              * 
              * You can insert individual documents using collection.Insert(). 
@@ -164,6 +163,7 @@ namespace AtlasStarter
     /// that is stored in MongoDB. Using strongly-typed classes makes
     /// serialization & deserializaton of your data much easier. 
     /// </summary>
+  
     public class Recipe
     {
         public string Name { get; set; }
