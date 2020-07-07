@@ -56,7 +56,6 @@ namespace AtlasStarter
 
             collection = client.GetDatabase(dbName)
                .GetCollection<Recipe>(collectionName);
-         
 
             /*      *** INSERT DOCUMENTS ***
              * 
@@ -124,7 +123,7 @@ namespace AtlasStarter
 
             var updateFilter = Builders<Recipe>.Update.Set(t => t.PrepTimeInMinutes, 72);
 
-            // The follwing FindOneAndUpdateOptions specify that we want the *updated* document
+            // The following FindOneAndUpdateOptions specify that we want the *updated* document
             // to be returned to us. By default, we get the document as it was *before*
             // the update.
 
@@ -151,25 +150,25 @@ namespace AtlasStarter
              */
 
             var deleteResult = collection
-                .DeleteMany(Builders<Recipe>.Filter.In(r => r.Name, new string[] { "elotes", "fried rice"}));
+                .DeleteMany(Builders<Recipe>.Filter.In(r => r.Name, new string[] { "elotes", "fried rice" }));
 
             Console.WriteLine($"I deleted {deleteResult.DeletedCount} records.");
 
             Console.Read();
         }
-
     }
 
+    /// <summary>
+    /// This Recipe class provides formal C# code structure to the data
+    /// that is stored in MongoDB. Using strongly-typed classes makes
+    /// serialization & deserializaton of your data much easier. 
+    /// </summary>
+  
     public class Recipe
     {
         public string Name { get; set; }
         public List<string> Ingredients { get; set; }
         public int PrepTimeInMinutes { get; set; }
-
-        public Recipe()
-        {
-            this.Ingredients = new List<string>();
-        }
 
         public Recipe(string name, List<string> ingredients, int prepTime)
         {
@@ -178,6 +177,11 @@ namespace AtlasStarter
             this.PrepTimeInMinutes = prepTime;
         }
 
+        /// <summary>
+        /// This static method is just here so we have a convenient way
+        /// to generate sample recipe data.
+        /// </summary>
+        /// <returns>A list of Recipes</returns>       
         public static List<Recipe> GetRecipes()
         {
             return new List<Recipe>()
