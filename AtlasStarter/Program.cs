@@ -116,7 +116,10 @@ namespace AtlasStarter
                 Console.WriteLine();
                 return;
             }
-
+            Console.WriteLine("We've retrieved the document:");
+            Console.WriteLine(findResult.ToString());
+            Console.WriteLine();
+            
             /*      *** UPDATE A DOCUMENT ***
              * 
              * You can update a single document or multiple documents in a single call.
