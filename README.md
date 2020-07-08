@@ -46,11 +46,11 @@ this project as a ZIP archive,
 
 ### 4. Configure your Atlas Credentials
 
-1. Open the  `Program.cs` file.
+1. Open the `Program.cs` file.
 
 2. On line 17, replace the placeholder text with the connection string 
    to your Atlas cluster. For more information on finding the connection 
-   string, see []().
+   string, see [Connect via Driver](https://docs.atlas.mongodb.com/driver-connection/).
 
 ```csharp
     var mongoUri = "<Your Atlas Connection String>";
