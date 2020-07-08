@@ -45,6 +45,7 @@ namespace AtlasStarter
                     "username and password, and that your IP address is " +
                     $"in the Access List. Message: {e.Message}");
                 Console.WriteLine(e);
+                Console.WriteLine();
                 return;
             }
 
@@ -76,6 +77,7 @@ namespace AtlasStarter
                 Console.WriteLine($"Something went wrong trying to insert the new documents." +
                     $" Message: {e.Message}");
                 Console.WriteLine(e);
+                Console.WriteLine();
                 return;
             }
 
@@ -94,6 +96,7 @@ namespace AtlasStarter
             {
                 Console.WriteLine($"{recipe.Name} has {recipe.Ingredients.Count} ingredients " +
                     $"and takes {recipe.PrepTimeInMinutes} minutes to make");
+                Console.WriteLine();
             }
 
             // We can also find a single document. Let's find the first document
@@ -111,6 +114,7 @@ namespace AtlasStarter
             {
                 Console.WriteLine(
                     "I didn't find any recipes that contain 'potato' as an ingredient.");
+                Console.WriteLine();
                 return;
             }
 
@@ -140,7 +144,7 @@ namespace AtlasStarter
 
             Console.WriteLine("Here's the updated document:");
             Console.WriteLine(updatedDocument.ToString());
-
+            Console.WriteLine();
             /*      *** DELETE DOCUMENTS ***
              *      
              *      As with other CRUD methods, you can delete a single document 
