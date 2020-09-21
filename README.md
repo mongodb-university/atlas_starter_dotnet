@@ -44,7 +44,7 @@ this project as a ZIP archive,
 
 3. Select the AtlasStarter.sln file, and then click `OK`.
 
-### 4. Configure your Atlas Credentials
+### 3. Configure your Atlas Credentials
 
 1. Open the `Program.cs` file.
 
@@ -56,7 +56,7 @@ this project as a ZIP archive,
     var mongoUri = "<Your Atlas Connection String>";
 ```
 
-### 5. Run the Project
+### 4. Run the Project
 
 1. Click the Run icon, or from the Run menu, choose **Start Debugging**.
 
