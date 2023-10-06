@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using AtlasStarter.Models;
 using MongoDB.Driver;
 
 namespace AtlasStarter
 {
-    class MainClassNoPrompt
+    static class MainClassNoPrompt
     {
         public static void Main(string[] args)
         {
@@ -55,8 +56,9 @@ namespace AtlasStarter
             var dbName = "myDatabase";
             var collectionName = "recipes";
 
-            collection = client.GetDatabase(dbName)
-               .GetCollection<Recipe>(collectionName);
+            collection = client
+                .GetDatabase(dbName)
+                .GetCollection<Recipe>(collectionName);
 
             /*      *** INSERT DOCUMENTS ***
              * 
@@ -88,10 +90,11 @@ namespace AtlasStarter
              * filters, and is used here to show its most basic use.
              */
 
-            var allDocs = collection.Find(Builders<Recipe>.Filter.Empty)
+            var allDocs = collection
+                .Find(Builders<Recipe>.Filter.Empty)
                 .ToList();
 
-            foreach (Recipe recipe in allDocs)
+            foreach (var recipe in allDocs)
             {
                 Console.WriteLine($"{recipe.Name} has {recipe.Ingredients.Count} ingredients " +
                     $"and takes {recipe.PrepTimeInMinutes} minutes to make");
@@ -103,11 +106,12 @@ namespace AtlasStarter
             // use the Builders class to create the filter, and a LINQ
             // statement to define the property and value we're after:
 
-            var findFilter = Builders<Recipe>
-                .Filter.AnyEq(t => t.Ingredients,
-                "potato");
+            var findFilter = Builders<Recipe>.Filter
+                .AnyEq(t => t.Ingredients, "potato");
 
-            var findResult = collection.Find(findFilter).FirstOrDefault();
+            var findResult = collection
+                .Find(findFilter)
+                .FirstOrDefault();
 
             if (findResult == null)
             {
@@ -128,7 +132,8 @@ namespace AtlasStarter
              * just found.
              */
 
-            var updateFilter = Builders<Recipe>.Update.Set(t => t.PrepTimeInMinutes, 72);
+            var updateFilter = Builders<Recipe>.Update
+                .Set(t => t.PrepTimeInMinutes, 72);
 
             // The following FindOneAndUpdateOptions specify that we want the *updated* document
             // to be returned to us. By default, we get the document as it was *before*
@@ -147,6 +152,7 @@ namespace AtlasStarter
             Console.WriteLine("Here's the updated document:");
             Console.WriteLine(updatedDocument.ToString());
             Console.WriteLine();
+            
             /*      *** DELETE DOCUMENTS ***
              *      
              *      As with other CRUD methods, you can delete a single document 
@@ -157,47 +163,11 @@ namespace AtlasStarter
              */
 
             var deleteResult = collection
-                .DeleteMany(Builders<Recipe>.Filter.In(r => r.Name, new string[] { "elotes", "fried rice" }));
+                .DeleteMany(Builders<Recipe>.Filter.In(r => r.Name, new[] { "elotes", "fried rice" }));
 
             Console.WriteLine($"I deleted {deleteResult.DeletedCount} records.");
 
             Console.Read();
-        }
-    }
-
-    /// <summary>
-    /// This Recipe class provides formal C# code structure to the data
-    /// that is stored in MongoDB. Using strongly-typed classes makes
-    /// serialization & deserializaton of your data much easier. 
-    /// </summary>
-  
-    public class Recipe
-    {
-        public string Name { get; set; }
-        public List<string> Ingredients { get; set; }
-        public int PrepTimeInMinutes { get; set; }
-
-        public Recipe(string name, List<string> ingredients, int prepTime)
-        {
-            this.Name = name;
-            this.Ingredients = ingredients;
-            this.PrepTimeInMinutes = prepTime;
-        }
-
-        /// <summary>
-        /// This static method is just here so we have a convenient way
-        /// to generate sample recipe data.
-        /// </summary>
-        /// <returns>A list of Recipes</returns>       
-        public static List<Recipe> GetRecipes()
-        {
-            return new List<Recipe>()
-            {
-                new Recipe("elotes", new List<string>(){"corn", "mayonnaise", "cotija cheese", "sour cream", "lime" }, 35),
-                new Recipe("loco moco", new List<string>(){"ground beef", "butter", "onion", "egg", "bread bun", "mushrooms" }, 54),
-                new Recipe("patatas bravas", new List<string>(){"potato", "tomato", "olive oil", "onion", "garlic", "paprika" }, 80),
-                new Recipe("fried rice", new List<string>(){"rice", "soy sauce", "egg", "onion", "pea", "carrot", "sesame oil" }, 40),
-            };
         }
     }
 }
